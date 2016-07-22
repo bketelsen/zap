@@ -1,8 +1,8 @@
 package another
 
-import "github.com/uber-go/zap"
+import "github.com/bketelsen/zap/backlog"
 
-var Logger zap.Logger
+var Logger = backlog.NewJSON()
 
 func Another() {
 	Logger.Error("something went wrong!")

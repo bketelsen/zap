@@ -1,9 +1,12 @@
 package sub
 
-import "github.com/uber-go/zap"
+import (
+	"github.com/bketelsen/zap/backlog"
+)
 
-var Logger zap.Logger
+var Logger = backlog.NewJSON()
 
 func Sub() {
 	Logger.Error("something went wrong!")
+	Logger.Warn("details", backlog.String("caller", "brian"))
 }

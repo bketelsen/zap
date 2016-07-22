@@ -2,29 +2,32 @@ package main
 
 import (
 	"github.com/bketelsen/zap/another"
+	"github.com/bketelsen/zap/backlog"
+	"github.com/bketelsen/zap/custom"
 	"github.com/bketelsen/zap/sub"
-	"github.com/uber-go/zap"
 )
 
 func main() {
 
-	// Log in JSON, using zap's reflection-free JSON encoder.
-	// The default options will log any Info or higher logs to standard out.
-	logger := zap.NewJSON()
+	logger := backlog.NewJSON(backlog.AddCaller())
 
 	logger.Warn("Log from main")
-	logger.Warn(
-		"structured context from main",
-		zap.String("application", "zap"),
-	)
 
-	sublog := logger.With(zap.String("pkg", "sub"))
+	logger.WithString("mykey", "myvalue").Warn("message is clear")
+
+	sublog := logger.WithString("pkg", "sub")
 	sub.Logger = sublog
 
-	anotherlog := logger.With(zap.String("pkg", "another"))
+	anotherlog := logger.WithString("pkg", "another")
 	another.Logger = anotherlog
 
 	sub.Sub()
 	another.Another()
+
+	ct := &custom.CustomType{
+		Name:  "Server",
+		Count: 5,
+	}
+	sublog.WithType("custom", ct).Info("Broken thing")
 	logger.Info("Done.")
 }
